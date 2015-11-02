@@ -51,12 +51,12 @@ public boolean delete(int token, boolean deleteTaskFile);
 Initialize DownloadManagerPro
 =============================
 
-in order to download with this lib you need to set its basic configurations and give him a listener to poke you about tasks status.
+in order to download with this lib you need to set its basic configurations and give it a listener to poke you about tasks status.
 ```java
-void DownloadManagerPro.init(String saveFilePath, int maxChunk, DownloadManagerListener class)
+void DownloadManagerPro.init(String saveFolderPath, int maxChunk, DownloadManagerListener class)
 ```
 
-* String **saveFilePath**: folder address that you want to save your completed download task in it.
+* String **saveFolderPath**: folder address that you want to save your completed download task in it.
 * int **maxChunk** : number of maximum chunks. any task is divided into some chunks and download them in parallel. it's better not to define more than 16 chunks; but if you do it's set to 16 automatically.
 * DownloadManagerListener **listenerClass** in this package an interface created to report developer download tasks status. this interface includes some abstract methods that will be introduced later.
 
@@ -77,7 +77,7 @@ public class MyActivity extends Activity implements DownloadManagerListener {
 
 -----------------
 
-there are three ways to define your download task, so you can define it any way you want. for example If you didn't set maximum chunks number or sd card folder address it uses your initialized values. these methods return you a task id that you can call to start or pause that task using this token.
+there are three ways to define your download task, so you can define it any way you want. For example If you didn't set maximum chunks number or sd card folder address, it uses your initialized values. These methods return you a task id that you can call to start or pause that task using this token.
 ```java
 int DownloadManagerPro.addTask(String saveName, String url, int chunk, String sdCardFolderAddress, boolean overwrite, boolean priority)
 
@@ -87,8 +87,8 @@ int DownloadManagerPro.addTask(String saveName, String url, boolean overwrite, b
 ```
 * String **saveName**: defining te name of desired download file.
 * String **url** : Location of desired downlaod file.
-* int chunk : Number of chunks which download file has been divided into.
-* String sdCardFolder : Location of where user want to save the file.
+* int **chunk** : Number of chunks which download file has been divided into.
+* String **sdCardFolder** : Location of where user want to save the file.
 * boolean **overwrite** : Overwrite if exists another file with the same name. If true, overwrite and replace the file. If false, find new name and save it with new name.
 * boolean **priority** : Grant priority to more desired files to be downloaded.
 
@@ -136,15 +136,15 @@ StartQueueDownload method create a queue sort on what you want and start downloa
 ```java
 void DownloadManagerPro.StartQueueDownload(int downloadTaskPerTime, int priority) throws QueueDownloadInProgressException
 ```
-int downloadTaskPerTime: the number of task that can be downloaded simultaneously
+int **downloadTaskPerTime**: the number of task that can be downloaded simultaneously
 * int priority: Grant priority to more desired files to be downloaded.
 
  * QueueSort.HighPriority : only high priority
  * QueueSort.LowPriority : only low priority
  * QueueSort.HighToLowPriority : sort queue from high to low priority
  * QueueSort.LowToHighPriority : sort queue from low to high priority
- * QueueSort.earlierFirst : sort queue from earlier to oldest tasks
- * QueueSort.oldestFirst : sort queue from old to earlier tasks
+ * QueueSort.earlierFirst : sort queue from earlier to oldest tasks (Last-In First-Out, LIFO)
+ * QueueSort.oldestFirst : sort queue from old to earlier tasks (First-In, First-Out, FIFO)
 
 
 Example:
@@ -160,7 +160,7 @@ try {
 -----
 
 
-this method pauses queue download and if no queue download was started it throws a QueueDownloadNotStartedException exception.
+this method pauses queue download and if no queue download was started. It throws a QueueDownloadNotStartedException exception.
 ```java
 void DownloadManagerPro.pauseQueueDownload()throws QueueDownloadNotStartedException
 ```
@@ -182,7 +182,7 @@ In this section we are working with reports since we need to get tasks status an
 
 ----------
 
-It reports task download information in "ReportStructure" style using a token (download task id) and finally returns the statue of that token.
+It reports task download information in "ReportStructure" style using a token (download task id) and finally returns the status of that token.
 ```java
 ReportStruct DownloadManagerPro.SingleDownloadStatus(int token)
 ```
@@ -200,7 +200,7 @@ ReportStruct DownloadManagerPro.SingleDownloadStatus(int token)
 * String **type**: file MIME
 * int **chunks**: task chunks number
 * double **percent**: downloaded file percent
-* long **downloadLength**: size that will get from your sd card after it completely download
+* long **downloadLength**: size that will be retrieved from your sd card after it is completely downloaded
 * String **saveAddress**: save file address
 * boolean **priority**: true if task was high priority
 
@@ -247,7 +247,7 @@ List<ReportStructure> completedDownloadTasks = dm.lastCompletedTasks();
 
 --------------
 
-This method checks all un notified tasks, so in another "lastCompletedDownloads" call ,completed task does not show up again. “lastCompletedDownloads”: Shows the list of latest completed downloads. Calling this method, all of the tasks that were shown in the previous report, will be eliminated from "lastCompletedDownloads"
+This method checks all unnotified tasks, so in another "lastCompletedDownloads" call ,completed task does not show up again. “lastCompletedDownloads”: Shows the list of latest completed downloads. Calling this method, all of the tasks that were shown in the previous report, will be eliminated from "lastCompletedDownloads"
 ```java
 void DownloadManagerPro.unNotifiedCheck()
 ```
